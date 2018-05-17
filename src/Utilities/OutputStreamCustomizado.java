@@ -18,7 +18,7 @@ public class OutputStreamCustomizado extends OutputStream {
     
     @Override
     public void write(int i) throws IOException {
-        textArea.append(String.valueOf(i));
+        textArea.append(String.valueOf((char) i));
         textArea.setCaretPosition(textArea.getDocument().getLength());
         textArea.update(textArea.getGraphics());
     }
