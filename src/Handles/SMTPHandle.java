@@ -169,7 +169,7 @@ public class SMTPHandle extends javax.swing.JFrame {
 
         if ((!"".equals(de)) && (!"".equals(server)) && (!"".equals(porta)) && (!"".equals(para))) {
             try {
-                mail = new SMTPClient("", de, para, server, porta);
+                mail = new SMTPClient("Teste", de, para, server, porta);
             } catch (IOException ex) {
                 Logger.getLogger(SMTPHandle.class.getName()).log(Level.SEVERE, null, ex);
             }
