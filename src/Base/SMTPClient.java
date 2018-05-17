@@ -33,7 +33,7 @@ public class SMTPClient {
 
         if (mail != null) {
             if (mail.send(this.msg, this.remet, this.dest)) {
-                System.out.println("E-mail enviado.");
+                System.out.println("Conexão com o servidor Estabelecida.");
             } else {
                 System.out.println("Conexão com o servidor SMTP falhou!");
             }
