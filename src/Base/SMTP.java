@@ -11,10 +11,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-/**
- *
- * @author douglas
- */
 public class SMTP {
 
     private final int porta;
