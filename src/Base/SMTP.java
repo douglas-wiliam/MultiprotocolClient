@@ -32,7 +32,6 @@ public class SMTP {
 
         System.out.println("mailhost = " + mailHost);
         System.out.println("localHost= " + localHost);
-        System.out.println("Construtor SMTP terminado.\n");
     }
 
     public boolean send(String msg, String remet, String dest) throws IOException {
