@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 /**
  *
- * @author douglas
+ * @author douglas, diego
  */
 public class Terminal {
 
