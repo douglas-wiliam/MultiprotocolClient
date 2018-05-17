@@ -29,12 +29,10 @@ public class SMTPClient {
 
         if (mail != null) {
             if (mail.send(this.msg, this.remet, this.dest)) {
-                System.out.println("Conexão com o servidor Estabelecida.");
+                System.out.println("Conexão com o servidor terminada.");
             } else {
                 System.out.println("Conexão com o servidor SMTP falhou!");
             }
         }
-
-        System.out.println("Terminado.");
     }
 }
