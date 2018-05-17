@@ -5,10 +5,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.UnknownHostException;
 
-/**
- *
- * @author douglas, diego
- */
 public class SMTPClient {
 
     private final String msg;
