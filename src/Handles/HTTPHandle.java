@@ -1,20 +1,28 @@
 package Handles;
 
 import Base.HTTPClient;
+import Utilities.OutputStreamCustomizado;
+import java.io.PrintStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
- * @author douglas
+ * @author douglas, diego
  */
 public class HTTPHandle extends javax.swing.JFrame {
 
     HTTPClient browser;
     String url;
 
+    PrintStream printStream;
+
     public HTTPHandle() {
         initComponents();
+        // Desviando msgs do terminal para JTextArea
+        printStream = new PrintStream(new OutputStreamCustomizado(CaixaTextoSite));
+        System.setOut(printStream);
+        System.setErr(printStream);
     }
 
     @SuppressWarnings("unchecked")
@@ -26,10 +34,8 @@ public class HTTPHandle extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         BotaoOK_Dialogo = new javax.swing.JButton();
         PainelBase = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
         CampoTextoURL = new javax.swing.JTextField();
         BotaoIr = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         CaixaTextoSite = new javax.swing.JTextArea();
@@ -37,9 +43,7 @@ public class HTTPHandle extends javax.swing.JFrame {
         Dialogo_CampoVazio.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         Dialogo_CampoVazio.setTitle("Alerta!");
         Dialogo_CampoVazio.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        Dialogo_CampoVazio.setMaximumSize(new java.awt.Dimension(220, 110));
         Dialogo_CampoVazio.setMinimumSize(new java.awt.Dimension(220, 110));
-        Dialogo_CampoVazio.setPreferredSize(new java.awt.Dimension(220, 110));
         Dialogo_CampoVazio.setResizable(false);
         Dialogo_CampoVazio.getContentPane().setLayout(null);
 
@@ -76,13 +80,8 @@ public class HTTPHandle extends javax.swing.JFrame {
         PainelBase.setMinimumSize(new java.awt.Dimension(640, 480));
         PainelBase.setPreferredSize(new java.awt.Dimension(640, 480));
         PainelBase.setLayout(null);
-
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
-        jLabel3.setText("Copyright © 2018 Douglas Wiliam <dougl.wil@gmail.com>, Diego Raian <diego.raian@gmail.com>, all rights reserved");
-        PainelBase.add(jLabel3);
-        jLabel3.setBounds(10, 410, 600, 13);
         PainelBase.add(CampoTextoURL);
-        CampoTextoURL.setBounds(70, 80, 480, 20);
+        CampoTextoURL.setBounds(20, 80, 530, 20);
 
         BotaoIr.setText("Ir");
         BotaoIr.addActionListener(new java.awt.event.ActionListener() {
@@ -92,10 +91,6 @@ public class HTTPHandle extends javax.swing.JFrame {
         });
         PainelBase.add(BotaoIr);
         BotaoIr.setBounds(550, 70, 50, 30);
-
-        jLabel1.setText("https://");
-        PainelBase.add(jLabel1);
-        jLabel1.setBounds(20, 80, 50, 20);
 
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
         jLabel2.setText("BROWSER");
@@ -117,14 +112,15 @@ public class HTTPHandle extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BotaoIrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotaoIrActionPerformed
-        url = "https://";
-        url += CampoTextoURL.getText();
+        url = CampoTextoURL.getText();
 
         if (!"".equals(url)) {
-            browser = new HTTPClient();
+            browser = new HTTPClient(url);
             try {
-                CaixaTextoSite.setText("Carregando...");
-                CaixaTextoSite.setText(browser.get(url));
+                CaixaTextoSite.setText("Carregando...\n");
+                browser.conecta();
+                browser.get();
+                browser.print();
             } catch (Exception ex) {
                 Logger.getLogger(HTTPHandle.class.getName()).log(Level.SEVERE, null, ex);
                 CaixaTextoSite.setText("Falha ao carregar site");
@@ -147,9 +143,7 @@ public class HTTPHandle extends javax.swing.JFrame {
     private javax.swing.JDialog Dialogo_CampoVazio;
     private javax.swing.JPanel PainelBase;
     private javax.swing.JPanel Painel_CamposVazios;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
