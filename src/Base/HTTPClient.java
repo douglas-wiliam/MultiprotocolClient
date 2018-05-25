@@ -1,68 +1,119 @@
 package Base;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import javax.net.ssl.HttpsURLConnection;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
- * @author douglas
+ * @author douglas, diego
  */
 public class HTTPClient {
 
-    private final String USER_AGENT;
+    private String url;
+    private URI uri;
+    private String host;
+    private String path;
+    private String query;
+    private String protocolo;
+    private int porta;
+    private Socket socket;
+    PrintWriter request;
+    private String encodedAuth;
+    InputStream response;
 
-    public HTTPClient() {
-        USER_AGENT = "Mozzila/5.0";
+    public HTTPClient(String url) { //"https://www.mkyong.com"
+        this.url = url;
+        try {
+            uri = new URI(url);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(HTTPClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        host = uri.getHost();
+        path = uri.getRawPath();
+        query = uri.getRawQuery();
+        protocolo = uri.getScheme();
+        porta = uri.getPort();
     }
 
-    public String get(String url) throws Exception {
-        URL obj;
-        HttpsURLConnection conexao;
-        String output, linhaInput, parametrosURL;
-        BufferedReader input;
-        DataOutputStream escrita;
-        StringBuilder resposta;
-        int condigoResposta;
+    public void conecta() {
 
-        // criando URL
-        obj = new URL(url);
-
-        // adicionando header
-        conexao = (HttpsURLConnection) obj.openConnection();
-        conexao.setRequestMethod("GET");
-        conexao.setRequestProperty("User-Agent", USER_AGENT);
-        conexao.setRequestProperty("Accept-Language", "en-US,en;q=0.5,pt-BR,pt;q=0.8");
-
-        //parametrosURL = "sn=C02G8416DRJM&cn=&locale=&caller=&num=12345";
-        // enviando requisicao post
-        // conexao.setDoOutput(true);
-        // escrita = new DataOutputStream(conexao.getOutputStream());
-        //escrita.writeBytes(parametrosURL);
-        //escrita.flush();
-        //escrita.close();
-        // recebendo resposta
-        condigoResposta = conexao.getResponseCode();
-        output = "Enviando requisição GET para URL: " + url
-                //+ "Parametros POST: " + parametrosURL
-                + "\nCódigo de Resposta: " + Integer.toString(condigoResposta) + "\n\n";
-
-        input = new BufferedReader(new InputStreamReader(conexao.getInputStream()));
-
-        resposta = new StringBuilder();
-
-        while ((linhaInput = input.readLine()) != null) {
-            resposta.append(linhaInput);
-            resposta.append("\n");
+        if (path == null || path.length() == 0) {
+            path = "/";
         }
 
-        input.close();
+        if (query != null && query.length() > 0) {
+            path += "?" + query;
+        }
 
-        output += resposta.toString();
+        if (porta == -1) {
+            if (protocolo.equals("http")) {
+                porta = 80;
+            } else if (protocolo.equals("https")) {
+                porta = 443;
+            } else {
+                System.out.println("Protocolo de Transferencia Invalido!");
+            }
+        }
 
-        return output;
+        try {   // Tentando conectar
+            socket = new Socket(host, porta);
+        } catch (IOException ex) {
+            Logger.getLogger(HTTPClient.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Problema conexao Host/Porta");
+        }
+
+        System.out.println("Saiu conecta.");
     }
 
+    public void get() {
+        encodedAuth = "";
+
+        try {
+            request = new PrintWriter(socket.getOutputStream());
+        } catch (IOException ex) {
+            Logger.getLogger(HTTPClient.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Problema ao enviar request.");
+        }
+
+        request.print("GET " + path + " HTTP/1.1\r\n"
+                + "Host: " + host + "\r\n"
+                + "Authorization: Basic " + encodedAuth + "\r\n"
+                + "Connection: close\r\n\r\n");
+        request.flush();
+        System.out.println("Saiu get.");
+    }
+
+    public void print() {
+        BufferedReader br;
+        String linha;
+
+        try {
+            System.out.println("Recebendo dados.");
+            response = socket.getInputStream();
+        } catch (IOException ex) {
+            Logger.getLogger(HTTPClient.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Problema ao receber response.");
+        }
+
+        br = new BufferedReader(new InputStreamReader(response));
+
+        try {
+            System.out.println("Imprimindo dados.");
+            while ((linha = br.readLine()) != null) {
+                System.out.println(linha);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(HTTPClient.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Problema ao ler response.");
+        }
+        System.out.println("Saiu print");
+    }
 }
