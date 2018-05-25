@@ -14,7 +14,7 @@ public class Terminal {
         String input;
         Scanner getInput = new Scanner(System.in); //javax.net vs java.net?
 
-        System.out.println("Digite qual aplição vai suar baseado no protocolo(ftp, http, smtp): ");
+        System.out.println("Digite qual aplicação vai usar baseado no protocolo(ftp, http, smtp): ");
         input = getInput.next();
         switch (input) {
 
