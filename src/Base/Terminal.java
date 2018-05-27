@@ -4,7 +4,6 @@ import Handles.FTPHandler;
 import Handles.HTTPHandle;
 import Handles.SMTPHandle;
 
-import java.io.File;
 import java.util.Scanner;
 
 /**
