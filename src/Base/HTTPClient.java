@@ -29,7 +29,7 @@ public class HTTPClient {
     private String encodedAuth;
     InputStream response;
 
-    public HTTPClient(String url) { //"https://www.mkyong.com"
+    public HTTPClient(String url) {
         this.url = url;
         try {
             uri = new URI(url);
