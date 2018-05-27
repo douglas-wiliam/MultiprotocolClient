@@ -1,10 +1,7 @@
 package Handles;
 
 import Base.FTPClient;
-import Base.HTTPClient;
 import Utilities.OutputStreamCustomizado;
-import javafx.stage.FileChooser;
-import sun.net.ftp.FtpClient;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
