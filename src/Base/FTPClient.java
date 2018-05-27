@@ -21,7 +21,6 @@ public class FTPClient {
 
 	private BufferedWriter writer = null;
 
-	private static boolean DEBUG = false;
 
 
 	public synchronized void conectar(String host, int port, String user, String pass) throws IOException {
@@ -56,9 +55,9 @@ public class FTPClient {
 	}
 
 	/**
-	 * Disconnects from the FTP server.
+	 * Disconecta do servidor FTP
 	 */
-	public synchronized void disconnect() throws IOException {
+	public synchronized void desconectar() throws IOException {
 		try {
 			sendLine("QUIT");
 		} finally {
@@ -67,7 +66,7 @@ public class FTPClient {
 	}
 
 	/**
-	 * Returns the working directory of the FTP server it is connected to.
+	 * Diretório corrente 
 	 */
 	public synchronized String pwd() throws IOException {
 		sendLine("PWD");
@@ -84,26 +83,19 @@ public class FTPClient {
 	}
 
 	/**
-	 * Changes the working directory (like cd). Returns true if successful.
+	 * Muda o diretório
 	 */
-	public synchronized boolean cwd(String dir) throws IOException {
+	public synchronized boolean mudarDiretorio(String dir) throws IOException {
 		sendLine("CWD " + dir);
 		String response = readLine();
 		return (response.startsWith("250 "));
 	}
 
-	/**
-	 * Sends a file to be stored on the FTP server. Returns true if the file
-	 * transfer was successful. The file is sent in passive mode to avoid NAT or
-	 * firewall problems at the client end.
-	 */
 
 	/**
-	 * Sends a file to be stored on the FTP server. Returns true if the file
-	 * transfer was successful. The file is sent in passive mode to avoid NAT or
-	 * firewall problems at the client end.
+	 * Envia o arquivo para o diretório do ftp
 	 */
-	public synchronized boolean stor(File arquivo) throws IOException {
+	public synchronized boolean enviarArquivo(File arquivo) throws IOException {
 
 		if(arquivo.isDirectory()){
 			throw new IOException("Esse caminho trata-se de um diretório");
@@ -158,9 +150,9 @@ public class FTPClient {
 		return null;
 	}
 	/**
-	 * Enter binary mode for sending binary files.
+	 * lista os arquivos do diretório
 	 */
-	public synchronized void showFiles() throws IOException {
+	public synchronized void listarArquivos() throws IOException {
 
         DadosConexao dados = entrarModoPassivo();
         Socket dataConnection = new Socket();
@@ -203,9 +195,6 @@ public class FTPClient {
 		try {
 			writer.write(line + "\r\n");
 			writer.flush();
-			if (DEBUG) {
-				System.out.println("> " + line);
-			}
 		} catch (IOException e) {
 			socket = null;
 			throw e;
@@ -213,11 +202,7 @@ public class FTPClient {
 	}
 
 	private String readLine() throws IOException {
-		String line = reader.readLine();
-		if (DEBUG) {
-			System.out.println("< " + line);
-		}
-		return line;
+		return reader.readLine();
 	}
 
 }

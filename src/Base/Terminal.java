@@ -1,5 +1,6 @@
 package Base;
 
+import Handles.FTPHandler;
 import Handles.HTTPHandle;
 import Handles.SMTPHandle;
 
@@ -21,21 +22,8 @@ public class Terminal {
         switch (input) {
 
             case ("ftp"):
-            	FTPClient ftp = new  FTPClient();
-            	ftp.conectar("192.168.1.16", 21, "admin", "admin");
-            	ftp.stor(new File("/home/diegoraian/Documentos/eXtreme programming  Praticas para o dia-a-dia no desenvolvimento agil de software - Casa do Codigo"));
-            	ftp.showFiles();
-            	ftp.disconnect();
-            	
-//            	FTPClient ftp = new  FTPClient();
-//            	ftp.conectar("192.168.1.16", 21, "admin", "admin");
-//            	ftp.showFiles();
-//            	ftp.stor(new File("/home/diegoraian/Documentos/eXtreme programming  Praticas para o dia-a-dia no desenvolvimento agil de software - Casa do Codigo"));
-//            	ftp.disconnect();
-//            	SimpleFTP ftp = new SimpleFTP();
-//            	ftp.connect("localhost", 21, "admin", "admin");
-//            	ftp.stor(new File("/home/diegoraian/Documentos/ftp/Main.java"));
-//            	ftp.disconnect();
+            	FTPHandler ftp  = new FTPHandler();
+            	ftp.setVisible(true);
                 break;
 
             case ("http"):
