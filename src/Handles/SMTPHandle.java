@@ -4,6 +4,7 @@ import Base.SMTPClient;
 import Utilities.OutputStreamCustomizado;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,7 +15,7 @@ import java.util.logging.Logger;
 public class SMTPHandle extends javax.swing.JFrame {
 
     SMTPClient mail;
-    String de, para, server;
+    String usuario, senha, emailDestino, server;
     int porta;
 
     PrintStream printStream;
@@ -42,14 +43,16 @@ public class SMTPHandle extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         CampoTextoPorta = new javax.swing.JTextField();
-        CampoTextoDe = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         CaixaTextoRespostaServer = new javax.swing.JTextArea();
         CampoTextoServer = new javax.swing.JTextField();
-        CampoTextoPara = new javax.swing.JTextField();
+        CampoEmailDestino = new javax.swing.JTextField();
         BotaoConectar = new javax.swing.JButton();
+        CampoTextoUsuario = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        CampoSenha = new javax.swing.JPasswordField();
 
         Dialogo_CampoVazioLogin.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         Dialogo_CampoVazioLogin.setTitle("Alerta!");
@@ -104,25 +107,23 @@ public class SMTPHandle extends javax.swing.JFrame {
         PainelLogin.add(BotaoLimpar);
         BotaoLimpar.setBounds(370, 390, 100, 25);
 
-        jLabel3.setText("Para:");
+        jLabel3.setText("Email Destino:");
         PainelLogin.add(jLabel3);
-        jLabel3.setBounds(360, 170, 40, 20);
+        jLabel3.setBounds(20, 180, 100, 30);
 
         jLabel4.setText("Porta:");
         PainelLogin.add(jLabel4);
-        jLabel4.setBounds(360, 130, 42, 15);
+        jLabel4.setBounds(20, 140, 42, 30);
         PainelLogin.add(CampoTextoPorta);
-        CampoTextoPorta.setBounds(410, 120, 200, 30);
-        PainelLogin.add(CampoTextoDe);
-        CampoTextoDe.setBounds(140, 170, 200, 30);
+        CampoTextoPorta.setBounds(140, 140, 200, 30);
 
         jLabel9.setText("Server(SMTP):");
         PainelLogin.add(jLabel9);
-        jLabel9.setBounds(20, 120, 100, 20);
+        jLabel9.setBounds(20, 100, 100, 30);
 
-        jLabel10.setText("De:");
+        jLabel10.setText("Senha:");
         PainelLogin.add(jLabel10);
-        jLabel10.setBounds(20, 170, 30, 20);
+        jLabel10.setBounds(360, 180, 60, 30);
 
         CaixaTextoRespostaServer.setEditable(false);
         CaixaTextoRespostaServer.setColumns(20);
@@ -132,9 +133,9 @@ public class SMTPHandle extends javax.swing.JFrame {
         PainelLogin.add(jScrollPane2);
         jScrollPane2.setBounds(80, 230, 500, 140);
         PainelLogin.add(CampoTextoServer);
-        CampoTextoServer.setBounds(140, 120, 200, 30);
-        PainelLogin.add(CampoTextoPara);
-        CampoTextoPara.setBounds(410, 170, 200, 30);
+        CampoTextoServer.setBounds(140, 100, 200, 30);
+        PainelLogin.add(CampoEmailDestino);
+        CampoEmailDestino.setBounds(140, 180, 200, 30);
 
         BotaoConectar.setText("Conectar");
         BotaoConectar.addActionListener(new java.awt.event.ActionListener() {
@@ -144,6 +145,14 @@ public class SMTPHandle extends javax.swing.JFrame {
         });
         PainelLogin.add(BotaoConectar);
         BotaoConectar.setBounds(180, 390, 100, 25);
+        PainelLogin.add(CampoTextoUsuario);
+        CampoTextoUsuario.setBounds(420, 100, 200, 30);
+
+        jLabel11.setText("Usuário:");
+        PainelLogin.add(jLabel11);
+        jLabel11.setBounds(360, 100, 60, 30);
+        PainelLogin.add(CampoSenha);
+        CampoSenha.setBounds(420, 180, 200, 30);
 
         PainelBase.add(PainelLogin, "card2");
 
@@ -162,15 +171,21 @@ public class SMTPHandle extends javax.swing.JFrame {
 
     private void BotaoConectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotaoConectarActionPerformed
 
-        para = CampoTextoPara.getText();
-        de = CampoTextoDe.getText();
+        emailDestino = CampoEmailDestino.getText();
+        usuario = CampoTextoUsuario.getText();
+        senha = String.valueOf(CampoSenha.getPassword());
         server = CampoTextoServer.getText();
         porta = Integer.parseInt(CampoTextoPorta.getText());
 
-        if ((!"".equals(de)) && (!"".equals(server)) && (!"".equals(porta)) && (!"".equals(para))) {
+        if ((!"".equals(usuario)) && (!"".equals(server)) && (!"".equals(porta)) && (!"".equals(emailDestino)) && (!"".equals(senha))) {
             try {
-                mail = new SMTPClient("Teste", de, para, server, porta);
-            } catch (IOException ex) {
+                mail = new SMTPClient(server, porta, usuario, senha, emailDestino);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(SMTPHandle.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                mail.conecta();
+            } catch (IOException | InterruptedException ex) {
                 Logger.getLogger(SMTPHandle.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
@@ -183,16 +198,18 @@ public class SMTPHandle extends javax.swing.JFrame {
     private javax.swing.JButton BotaoLimpar;
     private javax.swing.JButton BotaoOK_Dialogo;
     private javax.swing.JTextArea CaixaTextoRespostaServer;
-    private javax.swing.JTextField CampoTextoDe;
-    private javax.swing.JTextField CampoTextoPara;
+    private javax.swing.JTextField CampoEmailDestino;
+    private javax.swing.JPasswordField CampoSenha;
     private javax.swing.JTextField CampoTextoPorta;
     private javax.swing.JTextField CampoTextoServer;
+    private javax.swing.JTextField CampoTextoUsuario;
     private javax.swing.JDialog Dialogo_CampoVazioLogin;
     private javax.swing.JPanel PainelBase;
     private javax.swing.JPanel PainelLogin;
     private javax.swing.JPanel Painel_CamposVazios;
     private javax.swing.JLabel Titulo;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
